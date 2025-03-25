@@ -1,14 +1,13 @@
 package org.example.spartaschedule.repository;
 
+import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
 import org.example.spartaschedule.entity.Schedule;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -63,12 +62,13 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * [Repo] 전체 일정 리스트를 조회하고 반환하는 메서드
      * 수정일 내림차순 & 작성자명 오름차순 정렬
      *
-     * @return 일정 응답 객체 리스트
+     * @return 일정 객체 리스트
      */
     @Override
-    public List<ScheduleResponseDto> findAllSchedules() {
+    public List<Schedule> findAllSchedules() {
         String query = "SELECT * FROM schedule ORDER BY updated_at DESC, writer ASC";
-        return jdbcTemplate.query(query, scheduleResponseDtoMapper());
+
+        return jdbcTemplate.query(query, scheduleRowMapper());
     }
 
     /**
@@ -77,25 +77,40 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @return 조회된 일정 객체가 담긴 Optional 객체
      */
     @Override
-    public Optional<ScheduleResponseDto> findScheduleById(Long id) {
+    public Optional<Schedule> findScheduleById(Long id) {
         String query = "SELECT * FROM schedule WHERE id = ?";
-        List<ScheduleResponseDto> result = jdbcTemplate.query(query, scheduleResponseDtoMapper(), id);
+        List<Schedule> result = jdbcTemplate.query(query, scheduleRowMapper(), id);
 
         return result.stream().findFirst();
     }
 
     /**
-     * 조회한 행마다 ScheduleResponseDto 객체로 매핑해주는 메서드
-     * @return 일정 응답 객체 리스트
+     * [Repo] 일정을 수정하는 메서드
+     * @param id 일정 id
+     * @param dto 사용자 요청으로 수정한 일정 요청 객체
+     * @return 수정한 행(row)의 개수
      */
-    private RowMapper<ScheduleResponseDto> scheduleResponseDtoMapper(){
-        return new RowMapper<ScheduleResponseDto>() {
+    @Override
+    public int updateSchedule(Long id, ScheduleRequestDto dto) {
+        String query = "UPDATE schedule SET todo = ?, writer = ?, updated_at = ? WHERE id = ?";
+
+        return jdbcTemplate.update(query,
+                dto.getTodo(), dto.getWriter(), LocalDateTime.now(), id);
+    }
+
+    /**
+     * 조회한 행마다 Schedule 객체로 매핑해주는 메서드
+     * @return 일정 객체 리스트
+     */
+    private RowMapper<Schedule> scheduleRowMapper(){
+        return new RowMapper<Schedule>() {
             @Override
-            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new ScheduleResponseDto(
+            public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Schedule(
                         rs.getLong("id"),
                         rs.getString("todo"),
                         rs.getString("writer"),
+                        rs.getString("password"),
                         rs.getTimestamp("created_at").toLocalDateTime(),
                         rs.getTimestamp("updated_at").toLocalDateTime()
                 );

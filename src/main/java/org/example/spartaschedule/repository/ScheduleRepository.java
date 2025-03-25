@@ -1,5 +1,6 @@
 package org.example.spartaschedule.repository;
 
+import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
 import org.example.spartaschedule.entity.Schedule;
 
@@ -17,9 +18,22 @@ public interface ScheduleRepository {
 
     /**
      * [Repo] 전체 일정 조회 메서드
-     * @return 일정 응답 객체 리스트
+     * @return 일정 객체 리스트
      */
-    List<ScheduleResponseDto> findAllSchedules();
+    List<Schedule> findAllSchedules();
 
-    Optional<ScheduleResponseDto> findScheduleById(Long id);
+    /**
+     * [Repo] 단일 일정 조회 메서드
+     * @param id 일정 id
+     * @return 일정 객체
+     */
+    Optional<Schedule> findScheduleById(Long id);
+
+    /**
+     * [Repo] 일정 수정 메서드
+     * @param id 일정 id
+     * @param dto 사용자 요청으로 수정한 일정 요청 객체
+     * @return 수정된 객체 수 반환
+     */
+    int updateSchedule(Long id, ScheduleRequestDto dto);
 }

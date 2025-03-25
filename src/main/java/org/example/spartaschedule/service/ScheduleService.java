@@ -25,4 +25,12 @@ public interface ScheduleService {
      * @return 일정 응답 객체
      */
     ScheduleResponseDto findScheduleById(Long id);
+
+    /**
+     * [Service] 일정 수정하는 메서드
+     * @param id 일정 id
+     * @param dto 사용자 요청으로 수정한 일정 요청 객체
+     * @return 수정된 일정 응답 객체
+     */
+    ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto);
 }

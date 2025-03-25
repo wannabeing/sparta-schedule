@@ -24,7 +24,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     /**
      * [Service] 일정 생성 메서드
-     * @param dto 일정 요청 객체
+     * @param dto 사용자 요청으로 생성한 일정 요청 객체
      * @return 일정 응답 객체
      */
     @Override
@@ -44,7 +44,11 @@ public class ScheduleServiceImpl implements ScheduleService{
      */
     @Override
     public List<ScheduleResponseDto> findAllSchedules() {
-        return scheduleRepository.findAllSchedules();
+        // 일정 객체 리스트 -> 일정 응답 객체 리스트로 변환하여 반환
+        return scheduleRepository.findAllSchedules()
+                .stream()
+                .map(ScheduleResponseDto::new)
+                .toList();
     }
 
     /**
@@ -54,8 +58,38 @@ public class ScheduleServiceImpl implements ScheduleService{
      */
     @Override
     public ScheduleResponseDto findScheduleById(Long id) {
+        // 찾은 일정 객체 -> 일정 응답 객체로 변환하여 반환
         return scheduleRepository
                 .findScheduleById(id)
+                .map(ScheduleResponseDto::new)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 Id 입니다."));
+    }
+
+    /**
+     * [Service] 일정 수정 메서드
+     * @param id 일정 id
+     * @param dto 사용자 요청으로 생성한 일정 요청 객체
+     * @return 수정한 일정 응답 객체 또는 예외 처리
+     */
+    @Override
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
+        // 1. 존재하는 일정인지 확인
+        Schedule existSchedule = scheduleRepository
+                .findScheduleById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 Id 입니다."));
+
+        // 2. 비밀번호 비교
+        if (!passwordEncoder.matches(dto.getPassword(), existSchedule.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
+        // 3. 업데이트 성공적으로 수행했는지 확인
+        int updated = scheduleRepository.updateSchedule(id, dto);
+        if(updated == 0){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정에 실패했습니다.");
+        }
+
+        // 4. 수정된 일정 응답 객체 반환
+        return this.findScheduleById(id);
     }
 }
