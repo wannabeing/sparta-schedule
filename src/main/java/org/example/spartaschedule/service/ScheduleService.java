@@ -1,5 +1,6 @@
 package org.example.spartaschedule.service;
 
+import org.example.spartaschedule.dto.ApiResponseDto;
 import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
 
@@ -33,4 +34,11 @@ public interface ScheduleService {
      * @return 수정된 일정 응답 객체
      */
     ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto);
+
+    /**
+     * [Service] 일정을 삭제하는 메서드
+     * @param id 삭제하고자 하는 일정 id
+     * @return 삭제 메시지를 반환
+     */
+    ApiResponseDto deleteSchedule(Long id, String password);
 }

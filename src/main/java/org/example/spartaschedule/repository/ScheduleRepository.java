@@ -36,4 +36,11 @@ public interface ScheduleRepository {
      * @return 수정된 객체 수 반환
      */
     int updateSchedule(Long id, ScheduleRequestDto dto);
+
+    /**
+     * [Repo] 일정 삭제 메서드
+     * @param id 삭제하고자 하는 일정 id
+     * @return 삭제된 객체 수 반환
+     */
+    int deleteSchedule(Long id);
 }

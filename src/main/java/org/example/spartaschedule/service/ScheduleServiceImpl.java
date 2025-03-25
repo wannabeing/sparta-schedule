@@ -1,6 +1,7 @@
 package org.example.spartaschedule.service;
 
 
+import org.example.spartaschedule.dto.ApiResponseDto;
 import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
 import org.example.spartaschedule.entity.Schedule;
@@ -91,5 +92,33 @@ public class ScheduleServiceImpl implements ScheduleService{
 
         // 4. 수정된 일정 응답 객체 반환
         return this.findScheduleById(id);
+    }
+
+    /**
+     * [Service] 일정을 삭제하는 메서드
+     * @param id 삭제하고자 하는 일정 id
+     * @param password 비밀번호
+     * @return API 응답 객체
+     */
+    @Override
+    public ApiResponseDto deleteSchedule(Long id, String password) {
+        // 1. 존재하는 일정인지 확인
+        Schedule existSchedule = scheduleRepository
+                .findScheduleById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 Id 입니다."));
+
+        // 2. 비밀번호 비교
+        if (!passwordEncoder.matches(password, existSchedule.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
+        // 3. 삭제를 성공적으로 수행했는지 확인
+        int deleted = scheduleRepository.deleteSchedule(id);
+        if(deleted == 0){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제에 실패했습니다.");
+        }
+
+        // 3. 상태메시지 응답 객체 반환
+        return new ApiResponseDto("success","성공적으로 삭제하였습니다.");
     }
 }

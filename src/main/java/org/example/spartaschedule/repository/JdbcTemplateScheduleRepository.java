@@ -55,7 +55,8 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         Number scheduleId = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
         // 새로운 응답 객체 생성 후, 반환
-        return new ScheduleResponseDto(scheduleId.longValue(), schedule.getTodo(), schedule.getWriter(), currentTime, currentTime);
+        return new ScheduleResponseDto(
+                scheduleId.longValue(), schedule.getTodo(), schedule.getWriter(), currentTime, currentTime);
     }
 
     /**
@@ -96,6 +97,18 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
         return jdbcTemplate.update(query,
                 dto.getTodo(), dto.getWriter(), LocalDateTime.now(), id);
+    }
+
+    /**
+     * [Repo] 일정을 삭제하는 메서드
+     * @param id 삭제하고자 하는 일정 id
+     * @return 삭제한 행(row)의 개수
+     */
+    @Override
+    public int deleteSchedule(Long id) {
+        String query = "DELETE FROM schedule WHERE id = ?";
+
+        return jdbcTemplate.update(query, id);
     }
 
     /**
