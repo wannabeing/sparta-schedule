@@ -6,6 +6,7 @@ import org.example.spartaschedule.dto.ScheduleResponseDto;
 import org.example.spartaschedule.entity.Schedule;
 import org.example.spartaschedule.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -14,9 +15,11 @@ import java.util.List;
 @Service
 public class ScheduleServiceImpl implements ScheduleService{
     private final ScheduleRepository scheduleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ScheduleServiceImpl(ScheduleRepository scheduleRepository){
+    public ScheduleServiceImpl(ScheduleRepository scheduleRepository, PasswordEncoder passwordEncoder){
         this.scheduleRepository = scheduleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -26,8 +29,11 @@ public class ScheduleServiceImpl implements ScheduleService{
      */
     @Override
     public ScheduleResponseDto createSchedule(ScheduleRequestDto dto) {
+        // 암호화된 비밀번호 필드
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
+
         // 사용자 입력값으로 새로운 일정 객체 생성
-        Schedule schedule = new Schedule(dto.getTodo(), dto.getWriter(), dto.getPassword());
+        Schedule schedule = new Schedule(dto.getTodo(), dto.getWriter(), encryptedPassword);
 
         return scheduleRepository.createSchedule(schedule);
     }
