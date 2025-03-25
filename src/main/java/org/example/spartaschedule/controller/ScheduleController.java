@@ -82,6 +82,6 @@ public class ScheduleController {
             @Validated(ScheduleRequestDto.OnDelete.class) @RequestBody ScheduleRequestDto dto,
             @PathVariable Long id
     ){
-        return new ResponseEntity<>(scheduleService.deleteSchedule(id, dto.getPassword()), HttpStatus.OK);
+        return new ResponseEntity<>(scheduleService.deleteSchedule(id, dto.getPassword()), HttpStatus.NO_CONTENT);
     }
 }
