@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RequiredArgsConstructor // final 필드를 가진 생성자를 자동으로 만들어줌
 @RestController
