@@ -33,6 +33,12 @@ public class JdbcTemplateUserRepository implements UserRepository {
         return result.stream().findFirst();
     }
 
+    @Override
+    public List<User> findAllUsers() {
+        String query = "SELECT * FROM user";
+        return jdbcTemplate.query(query, userRowMapper());
+    }
+
     /**
      * 조회한 행마다 User 객체로 매핑해주는 메서드
      * @return 유저 객체 리스트

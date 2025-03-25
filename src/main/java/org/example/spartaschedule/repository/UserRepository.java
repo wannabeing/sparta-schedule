@@ -2,6 +2,7 @@ package org.example.spartaschedule.repository;
 
 import org.example.spartaschedule.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -11,4 +12,6 @@ public interface UserRepository {
      * @return 조회된 유저 객체가 담긴 Optional 객체
      */
     Optional<User> findUserById(Long id);
+
+    List<User> findAllUsers();
 }

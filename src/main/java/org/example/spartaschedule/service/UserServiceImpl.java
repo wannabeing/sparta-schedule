@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -27,5 +29,14 @@ public class UserServiceImpl implements UserService {
                 .findUserById(id)
                 .map(UserResponseDto::new)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 유저 id 입니다."));
+    }
+
+    @Override
+    public List<UserResponseDto> findAllUsers() {
+        return userRepository
+                .findAllUsers()
+                .stream()
+                .map(UserResponseDto::new)
+                .toList();
     }
 }
