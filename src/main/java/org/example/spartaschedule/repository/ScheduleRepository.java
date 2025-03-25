@@ -20,27 +20,30 @@ public interface ScheduleRepository {
      * [Repo] 전체 일정 조회 메서드
      * @return 일정 객체 리스트
      */
-    List<Schedule> findAllSchedules();
+    List<Schedule> findAllSchedules(Long userId);
 
     /**
      * [Repo] 단일 일정 조회 메서드
-     * @param id 일정 id
+     * @param scheduleId 일정 id
+     * @param userId 유저 id
      * @return 일정 객체
      */
-    Optional<Schedule> findScheduleById(Long id);
+    Optional<Schedule> findScheduleById(Long userId, Long scheduleId);
 
     /**
      * [Repo] 일정 수정 메서드
-     * @param id 일정 id
+     * @param scheduleId 일정 id
+     * @param userId 유저 id
      * @param dto 사용자 요청으로 수정한 일정 요청 객체
      * @return 수정된 객체 수 반환
      */
-    int updateSchedule(Long id, ScheduleRequestDto dto);
+    int updateSchedule(Long userId, Long scheduleId, ScheduleRequestDto dto);
 
     /**
      * [Repo] 일정 삭제 메서드
-     * @param id 삭제하고자 하는 일정 id
+     * @param scheduleId 일정 id
+     * @param userId 유저 id
      * @return 삭제된 객체 수 반환
      */
-    int deleteSchedule(Long id);
+    int deleteSchedule(Long userId, Long scheduleId);
 }

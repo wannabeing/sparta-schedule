@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 public class Schedule {
     private Long id;
     private String todo;
-    private String writer; // FIXME: 추후 작성자 ID로 변경
+    private Long userId; // 외래키
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     // ✅ 생성자
-    public Schedule(String todo, String writer, String password){
+    public Schedule(String todo, Long userId, String password){
         this.todo = todo;
-        this.writer = writer;
+        this.userId = userId;
         this.password = password;
     }
 }

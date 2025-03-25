@@ -25,28 +25,30 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     /**
      * [Service] 일정 생성 메서드
+     * @param userId 유저 id
      * @param dto 사용자 요청으로 생성한 일정 요청 객체
      * @return 일정 응답 객체
      */
     @Override
-    public ScheduleResponseDto createSchedule(ScheduleRequestDto dto) {
+    public ScheduleResponseDto createSchedule(Long userId, ScheduleRequestDto dto) {
         // 암호화된 비밀번호 필드
         String encryptedPassword = passwordEncoder.encode(dto.getPassword());
 
         // 사용자 입력값으로 새로운 일정 객체 생성
-        Schedule schedule = new Schedule(dto.getTodo(), dto.getWriter(), encryptedPassword);
+        Schedule schedule = new Schedule(dto.getTodo(), userId, encryptedPassword);
 
         return scheduleRepository.createSchedule(schedule);
     }
 
     /**
      * [Service] 전체 일정 조회 메서드
+     * @param userId 유저 id
      * @return 일정 응답 객체 리스트
      */
     @Override
-    public List<ScheduleResponseDto> findAllSchedules() {
+    public List<ScheduleResponseDto> findAllSchedules(Long userId) {
         // 일정 객체 리스트 -> 일정 응답 객체 리스트로 변환하여 반환
-        return scheduleRepository.findAllSchedules()
+        return scheduleRepository.findAllSchedules(userId)
                 .stream()
                 .map(ScheduleResponseDto::new)
                 .toList();
@@ -54,29 +56,31 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     /**
      * [Service] 단일 일정 조회 메서드
-     * @param id 일정 id
+     * @param scheduleId 일정 id
+     * @param userId 유저 id
      * @return 일정 응답 객체 또는 예외 처리
      */
     @Override
-    public ScheduleResponseDto findScheduleById(Long id) {
+    public ScheduleResponseDto findScheduleById(Long userId, Long scheduleId) {
         // 찾은 일정 객체 -> 일정 응답 객체로 변환하여 반환
         return scheduleRepository
-                .findScheduleById(id)
+                .findScheduleById(userId, scheduleId)
                 .map(ScheduleResponseDto::new)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 Id 입니다."));
     }
 
     /**
      * [Service] 일정 수정 메서드
-     * @param id 일정 id
+     * @param scheduleId 일정 id
+     * @param userId 유저 id
      * @param dto 사용자 요청으로 생성한 일정 요청 객체
      * @return 수정한 일정 응답 객체 또는 예외 처리
      */
     @Override
-    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
+    public ScheduleResponseDto updateSchedule(Long userId, Long scheduleId, ScheduleRequestDto dto) {
         // 1. 존재하는 일정인지 확인
         Schedule existSchedule = scheduleRepository
-                .findScheduleById(id)
+                .findScheduleById(userId, scheduleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 Id 입니다."));
 
         // 2. 비밀번호 비교
@@ -85,26 +89,27 @@ public class ScheduleServiceImpl implements ScheduleService{
         }
 
         // 3. 업데이트 성공적으로 수행했는지 확인
-        int updated = scheduleRepository.updateSchedule(id, dto);
+        int updated = scheduleRepository.updateSchedule(userId, scheduleId, dto);
         if(updated == 0){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정에 실패했습니다.");
         }
 
         // 4. 수정된 일정 응답 객체 반환
-        return this.findScheduleById(id);
+        return this.findScheduleById(userId, scheduleId);
     }
 
     /**
      * [Service] 일정을 삭제하는 메서드
-     * @param id 삭제하고자 하는 일정 id
+     * @param scheduleId 일정 id
+     * @param userId 유저 id
      * @param password 비밀번호
      * @return API 응답 객체
      */
     @Override
-    public ApiResponseDto deleteSchedule(Long id, String password) {
+    public ApiResponseDto deleteSchedule(Long userId, Long scheduleId, String password) {
         // 1. 존재하는 일정인지 확인
         Schedule existSchedule = scheduleRepository
-                .findScheduleById(id)
+                .findScheduleById(userId, scheduleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 Id 입니다."));
 
         // 2. 비밀번호 비교
@@ -113,7 +118,7 @@ public class ScheduleServiceImpl implements ScheduleService{
         }
 
         // 3. 삭제를 성공적으로 수행했는지 확인
-        int deleted = scheduleRepository.deleteSchedule(id);
+        int deleted = scheduleRepository.deleteSchedule(userId, scheduleId);
         if(deleted == 0){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제에 실패했습니다.");
         }
