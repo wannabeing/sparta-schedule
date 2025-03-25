@@ -70,7 +70,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @return 일정 객체 리스트
      */
     @Override
-    public List<Schedule> findPagedSchedulesByUserId(Long userId, int offset, int size) {
+    public List<Schedule> findPagedSchedules(Long userId, int offset, int size) {
         String query = "SELECT * FROM schedule WHERE user_id = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?";
         return jdbcTemplate.query(query, scheduleRowMapper(), userId, size, offset);
     }
@@ -82,7 +82,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
      * @return Long 타입의 전체 일정의 개수 반환
      */
     @Override
-    public Long findTotalSchedulesByUserId(Long userId) {
+    public Long findTotalSchedules(Long userId) {
         String query = "SELECT COUNT(*) FROM schedule WHERE user_id = ?";
 
         // 총 일정 개수를 Long 으로 변환해서 반환

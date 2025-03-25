@@ -23,7 +23,7 @@ public interface ScheduleService {
      * @param userId 유저 id
      * @return 일정 응답 객체 리스트
      */
-    PageScheduleResponseDto findPagedSchedulesByUserId(Long userId, int page, int size);
+    PageScheduleResponseDto findPagedSchedules(Long userId, int page, int size);
 
     /**
      * [Service] 단일 일정 조회 메서드

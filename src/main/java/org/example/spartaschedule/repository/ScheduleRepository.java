@@ -25,7 +25,7 @@ public interface ScheduleRepository {
      * @param size 가져올 개수
      * @return 일정 객체 리스트
      */
-    List<Schedule> findPagedSchedulesByUserId(Long userId, int offset, int size);
+    List<Schedule> findPagedSchedules(Long userId, int offset, int size);
 
     /**
      * [Repo] 전체 일정 개수 반환 메서드
@@ -33,7 +33,7 @@ public interface ScheduleRepository {
      * @param userId 유저 id
      * @return Long 타입의 전체 일정 개수
      */
-    Long findTotalSchedulesByUserId(Long userId);
+    Long findTotalSchedules(Long userId);
 
     /**
      * [Repo] 단일 일정 조회 메서드

@@ -57,7 +57,7 @@ public class ScheduleController {
             @ModelAttribute("validUserId") Long validUserId
     ){
         // 페이징 일정 응답 객체 반환
-        return new ResponseEntity<>(scheduleService.findPagedSchedulesByUserId(validUserId, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(scheduleService.findPagedSchedules(validUserId, page, size), HttpStatus.OK);
     }
 
     /**

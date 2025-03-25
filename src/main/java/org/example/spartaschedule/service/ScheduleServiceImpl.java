@@ -51,15 +51,15 @@ public class ScheduleServiceImpl implements ScheduleService{
      * @return 일정 응답 객체 리스트
      */
     @Override
-    public PageScheduleResponseDto findPagedSchedulesByUserId(Long userId, int currentPage, int pageSize) {
+    public PageScheduleResponseDto findPagedSchedules(Long userId, int currentPage, int pageSize) {
         // 1. 몇번째 행부터 가져올지 정하는 변수
         int offset = (currentPage - 1) * pageSize;
 
         // 2. offset, size 에 맞게 가져온 일정 목록
-        List<Schedule> schedules = scheduleRepository.findPagedSchedulesByUserId(userId, offset, pageSize);
+        List<Schedule> schedules = scheduleRepository.findPagedSchedules(userId, offset, pageSize);
 
         // 3. 총 일정 개수 확인
-        Long totalSchedules = scheduleRepository.findTotalSchedulesByUserId(userId);
+        Long totalSchedules = scheduleRepository.findTotalSchedules(userId);
         int totalPages = (int) Math.ceil((double) totalSchedules / pageSize);
 
         // 4. 일정 객체 리스트 -> 일정 응답 객체 리스트로 변환
