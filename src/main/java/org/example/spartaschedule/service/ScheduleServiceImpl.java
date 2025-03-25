@@ -2,6 +2,7 @@ package org.example.spartaschedule.service;
 
 
 import org.example.spartaschedule.dto.ApiResponseDto;
+import org.example.spartaschedule.dto.PageScheduleResponseDto;
 import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
 import org.example.spartaschedule.entity.Schedule;
@@ -25,6 +26,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     /**
      * [Service] 일정 생성 메서드
+     *
      * @param userId 유저 id
      * @param dto 사용자 요청으로 생성한 일정 요청 객체
      * @return 일정 응답 객체
@@ -41,21 +43,38 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     /**
-     * [Service] 전체 일정 조회 메서드
+     * [Service] 페이징된 일정 목록 조회 메서드
+     *
+     * @param currentPage 현재 페이지
+     * @param pageSize 페이지 당 개수
      * @param userId 유저 id
      * @return 일정 응답 객체 리스트
      */
     @Override
-    public List<ScheduleResponseDto> findAllSchedules(Long userId) {
-        // 일정 객체 리스트 -> 일정 응답 객체 리스트로 변환하여 반환
-        return scheduleRepository.findAllSchedules(userId)
+    public PageScheduleResponseDto findPagedSchedulesByUserId(Long userId, int currentPage, int pageSize) {
+        // 1. 몇번째 행부터 가져올지 정하는 변수
+        int offset = (currentPage - 1) * pageSize;
+
+        // 2. offset, size 에 맞게 가져온 일정 목록
+        List<Schedule> schedules = scheduleRepository.findPagedSchedulesByUserId(userId, offset, pageSize);
+
+        // 3. 총 일정 개수 확인
+        Long totalSchedules = scheduleRepository.findTotalSchedulesByUserId(userId);
+        int totalPages = (int) Math.ceil((double) totalSchedules / pageSize);
+
+        // 4. 일정 객체 리스트 -> 일정 응답 객체 리스트로 변환
+        List<ScheduleResponseDto> scheduleResponseDtoList = schedules
                 .stream()
                 .map(ScheduleResponseDto::new)
                 .toList();
+
+        // 5. 페이지 일정 응답 객체 반환
+        return new PageScheduleResponseDto(currentPage, pageSize, totalSchedules, totalPages, scheduleResponseDtoList);
     }
 
     /**
      * [Service] 단일 일정 조회 메서드
+     *
      * @param scheduleId 일정 id
      * @param userId 유저 id
      * @return 일정 응답 객체 또는 예외 처리
@@ -71,6 +90,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     /**
      * [Service] 일정 수정 메서드
+     *
      * @param scheduleId 일정 id
      * @param userId 유저 id
      * @param dto 사용자 요청으로 생성한 일정 요청 객체
@@ -100,6 +120,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     /**
      * [Service] 일정을 삭제하는 메서드
+     *
      * @param scheduleId 일정 id
      * @param userId 유저 id
      * @param password 비밀번호

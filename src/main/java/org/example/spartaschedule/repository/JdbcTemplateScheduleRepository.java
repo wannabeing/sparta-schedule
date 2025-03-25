@@ -29,6 +29,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     /**
      * [Repo] 일정 생성 메서드
+     *
      * @param schedule 생성된 일정 객체
      * @return 생성된 일정 응답 객체
      */
@@ -60,20 +61,37 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
     }
 
     /**
-     * [Repo] 전체 일정 리스트를 조회하고 반환하는 메서드
+     * [Repo] 페이징된 일정 목록을 조회하고 반환하는 메서드
      * 수정일 내림차순 정렬
      *
+     * @param userId 유저 Id
+     * @param offset 몇번째 행부터 가져올지 정하는 변수
+     * @param size 가져올 개수
      * @return 일정 객체 리스트
      */
     @Override
-    public List<Schedule> findAllSchedules(Long userId) {
-        String query = "SELECT * FROM schedule WHERE user_id = ? ORDER BY updated_at DESC";
+    public List<Schedule> findPagedSchedulesByUserId(Long userId, int offset, int size) {
+        String query = "SELECT * FROM schedule WHERE user_id = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(query, scheduleRowMapper(), userId, size, offset);
+    }
 
-        return jdbcTemplate.query(query, scheduleRowMapper(), userId);
+    /**
+     * [Repo] 전체 일정의 개수를 반환하는 메서드
+     *
+     * @param userId 유저 id
+     * @return Long 타입의 전체 일정의 개수 반환
+     */
+    @Override
+    public Long findTotalSchedulesByUserId(Long userId) {
+        String query = "SELECT COUNT(*) FROM schedule WHERE user_id = ?";
+
+        // 총 일정 개수를 Long 으로 변환해서 반환
+        return jdbcTemplate.queryForObject(query, Long.class, userId);
     }
 
     /**
      * [Repo] 단일 일정을 조회하고 반환하는 메서드
+     *
      * @param scheduleId 일정 id
      * @param userId 유저 id
      * @return 조회된 일정 객체가 담긴 Optional 객체
@@ -88,6 +106,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     /**
      * [Repo] 일정을 수정하는 메서드
+     *
      * @param scheduleId 일정 id
      * @param userId 유저 id
      * @param dto 사용자 요청으로 수정한 일정 요청 객체
@@ -103,6 +122,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
 
     /**
      * [Repo] 일정을 삭제하는 메서드
+     *
      * @param scheduleId 일정 id
      * @param userId 유저 id
      * @return 삭제한 행(row)의 개수

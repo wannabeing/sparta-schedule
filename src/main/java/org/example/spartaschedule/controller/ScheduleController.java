@@ -2,6 +2,7 @@ package org.example.spartaschedule.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.spartaschedule.dto.ApiResponseDto;
+import org.example.spartaschedule.dto.PageScheduleResponseDto;
 import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
 import org.example.spartaschedule.service.ScheduleService;
@@ -30,6 +31,7 @@ public class ScheduleController {
     /**
      * [Controller] 일정 생성 메서드
      *
+     * @param validUserId 유효성 검증된 유저 id
      * @param dto 사용자 일정 요청 객체
      * @return 생성된 일정 응답 객체
      */
@@ -43,16 +45,21 @@ public class ScheduleController {
     }
 
     /**
-     * [Controller] 모든 일정을 조회하는 메서드
+     * [Controller] 페이징된 일정 목록 조회 메서드
      *
+     * @param validUserId 유효성 검증된 유저 id
+     * @param page 현재 페이지 번호
+     * @param size 한 페이지당 개수
      * @return 일정 응답 객체 리스트
      */
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(
+    public ResponseEntity<PageScheduleResponseDto> findPagedSchedules(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             @ModelAttribute("validUserId") Long validUserId
     ){
-        // 리스트<일정 응답 객체> 반환
-        return new ResponseEntity<>(scheduleService.findAllSchedules(validUserId), HttpStatus.OK);
+        // 페이징 일정 응답 객체 반환
+        return new ResponseEntity<>(scheduleService.findPagedSchedulesByUserId(validUserId, page, size), HttpStatus.OK);
     }
 
     /**
