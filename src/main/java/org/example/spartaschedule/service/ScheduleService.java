@@ -3,7 +3,6 @@ package org.example.spartaschedule.service;
 import org.example.spartaschedule.dto.ApiResponseDto;
 import org.example.spartaschedule.dto.ScheduleRequestDto;
 import org.example.spartaschedule.dto.ScheduleResponseDto;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
