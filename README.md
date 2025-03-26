@@ -47,9 +47,9 @@
 >#### Response (JSON)
 >```json
 >{
->    "id": 22, // scheduleId
+>    "id": 22,
 >    "todo": "오늘의 할일!!",
->    "userId": 1, // userId
+>    "userId": 1,
 >    "createdAt": "2025-03-26 00:55:47",
 >    "updatedAt": "2025-03-26 00:55:47"
 >}
