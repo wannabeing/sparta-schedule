@@ -1,7 +1,9 @@
 # Schedule API  
+<div style="display: flex; gap: 5px;">
 <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white"/>
 <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white"/>
 <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white" />
+</div>
 
 ##  개요
 - [📌 프로젝트 회고(velog)](https://velog.io/@wannabeing/SPRING-%EC%9D%BC%EC%A0%95-API-%EA%B3%BC%EC%A0%9C-%ED%9A%8C%EA%B3%A0)
