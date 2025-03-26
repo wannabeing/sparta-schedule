@@ -39,11 +39,11 @@
 > ### 예시) Schedule 단건 조회
 >#### Request (GET)
 >- URL
->  - {BASE_URL}/{userId}/schedule/{scheduleId}
->  - ex. http://localhost:8080/1/schedule/22
+>    - {BASE_URL}/{userId}/schedule/{scheduleId}
+>    - ex. http://localhost:8080/1/schedule/22
 >- 파라미터
->  - **[필수]** (Long) userId: 유저 id
->  - **[필수]** (Long) scheduleId: 일정 id  
+>    - **[필수]** (Long) userId: 유저 id
+>    - **[필수]** (Long) scheduleId: 일정 id  
 >#### Response (JSON)
 >```json
 >{
